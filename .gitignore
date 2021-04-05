@@ -401,3 +401,4 @@ FodyWeavers.xsd
 *.idb
 *.recipe
 *.zip
+.vscode/
