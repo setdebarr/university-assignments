@@ -104,6 +104,7 @@ public:
 			printhelp(root, 0);
 	}
 
+	// Prints the elements of the tree in order
 	void printInOrder() const {
 		if (root == NULL)
 			cout << "The BST is empty.\n";
@@ -111,6 +112,7 @@ public:
 			printInOrderHelp(root);
 	}
 
+	// Prints the elements of the tree in reverse order
 	void printReverse() const {
 		if (root == NULL)
 			cout << "The BST is empty.\n";
@@ -141,14 +143,42 @@ BSTNode<Key, E> *BST<Key, E>::inserthelp(BSTNode<Key, E> *root, const Key &k, co
 	if (root == NULL) { // Empty tree: create node
 		return new BSTNode<Key, E>(k, it, NULL, NULL);
 	}
-	if (k < root->key() && root->getleftBit == 0) {
-		
+
+	if (k < root->key() && (root->left() == NULL || root->getleftBit())) {
+		BSTNode<Key, E> *child = new BSTNode<Key, E>(k, it, NULL, NULL);
+
+		child->setRight(root);
+		child->setrightBit(true);
+
+		child->setLeft(root->left());
+		child->setleftBit(true);
+
+		root->setLeft(child);
+		root->setleftBit(false);
+
+		return root;
+	}
+	if (k >= root->key() && (root->right() == NULL || root->getrightBit())) {
+		BSTNode<Key, E> *child = new BSTNode<Key, E>(k, it, NULL, NULL);
+
+		child->setLeft(root);
+		child->setleftBit(true);
+
+		child->setRight(root->right());
+		child->setrightBit(true);
+
+		root->setRight(child);
+		root->setrightBit(false);
+
+		return root;
 	}
 
 	if (k < root->key()) {
 		root->setLeft(inserthelp(root->left(), k, it));
+		root->setleftBit(false);
 	} else {
 		root->setRight(inserthelp(root->right(), k, it));
+		root->setrightBit(false);
 	}
 	return root; // Return tree with node inserted
 }
@@ -220,23 +250,63 @@ E *BST<Key, E>::findhelp(BSTNode<Key, E> *root,
 // Print out a BST
 template <typename Key, typename E>
 void BST<Key, E>::printhelp(BSTNode<Key, E> *root, int level) const {
-	if (root == NULL)
+	if (root == NULL) {
 		return; // Empty tree
-	printhelp(root->left(), level + 1); // Do left subtree
+	}
+
+	if (!root->getleftBit()) {
+		printhelp(root->left(), level + 1); // Do left subtree
+	}
+
 	for (int i = 0; i < level; i++) // Indent to level
 		cout << "  ";
 	cout << root->key() << "\n"; // Print node value
-	printhelp(root->right(), level + 1); // Do right subtree
+
+	if (!root->getrightBit()) {
+		printhelp(root->right(), level + 1); // Do right subtree
+	}
 }
 
 // Print out a BST in In-order
 template <typename Key, typename E>
 void BST<Key, E>::printInOrderHelp(BSTNode<Key, E> *root) const {
+	while (root->left() != NULL) {
+		root = root->left();
+	}
+
+	while (root->right() != NULL) {
+		vist(root);
+		if (root->getrightBit()) {
+			root = root->right();
+		} else {
+			root = root->right();
+			while (!root->getleftBit()) {
+				root = root->left();
+			}
+		}
+	}
+	vist(root);
 }
 
 // Print out a BST in reverse
 template <typename Key, typename E>
 void BST<Key, E>::printReverseHelp(BSTNode<Key, E> *root) const {
+	while (root->right() != NULL) {
+		root = root->right();
+	}
+
+	while (root->left() != NULL) {
+		vist(root);
+		if (root->getleftBit()) {
+			root = root->left();
+		} else {
+			root = root->left();
+			while (!root->getrightBit()) {
+				root = root->right();
+			}
+		}
+	}
+	vist(root);
 }
 
 #endif

@@ -16,12 +16,12 @@
 template <typename Key, typename E>
 class BSTNode : public BinNode<E> {
 private:
-	Key k; // The node's key
-	E it; // The node's value
-	BSTNode *lc; // Pointer to left child
-	BSTNode *rc; // Pointer to right child
-	unsigned short int leftBit : 1;
-	unsigned short int rightBit : 1;
+	Key k; 					// The node's key
+	E it; 					// The node's value
+	BSTNode *lc; 			// Pointer to left child
+	BSTNode *rc; 			// Pointer to right child
+	bool leftBit : true;	// Flag to determine if left pointer is thread or branch
+	bool rightBit : true;	// Flag to determine if right pointer is thread or branch
 
 public:
 	// Two constructors -- with and without initial values
@@ -44,18 +44,16 @@ public:
 	inline BSTNode *left() const { return lc; }
 	void setLeft(BinNode<E> *b) {
 		lc = (BSTNode *)b;
-		leftBit = 1;
 	}
 	inline BSTNode *right() const { return rc; }
 	void setRight(BinNode<E> *b) {
 		rc = (BSTNode *)b;
-		rightBit = 1;
 	}
 
-	//
-	void setleftBit(unsigned short int flag) { leftBit = flag; }
+	// Set and get bit flags
+	void setleftBit(bool f) { leftBit = f; }
 	bool getleftBit() { return leftBit; }
-	void setrightBit(unsigned short int flag) { rightBit = flag; }
+	void setrightBit(bool f) { rightBit = f; }
 	bool getrightBit() { return rightBit; }
 
 	// Return true if it is a leaf, false otherwise
